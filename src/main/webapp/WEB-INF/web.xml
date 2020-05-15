@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app PUBLIC
+  "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+  "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+
+    <display-name>monsai</display-name>
+
+    <!-- General configuration -->
+    <context-param>
+        <param-name>encoding</param-name>
+        <param-value>UTF-8</param-value>
+    </context-param>
+
+    <!-- Set the location of the spring application context definition -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:applicationContext.xml</param-value>
+    </context-param>
+
+    <!-- Http session timeout is 1 hour -->
+    <session-config>
+        <session-timeout>60</session-timeout>
+    </session-config>
+
+
+    <!-- Spring listeners -->
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <!-- Security filter -->
+    <filter>
+        <filter-name>SecurityFilter</filter-name>
+        <filter-class>com.projecta.monsai.security.SecurityFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>SecurityFilter</filter-name>
+        <url-pattern>*</url-pattern>
+    </filter-mapping>
+
+
+    <!-- XMLA servlet -->
+    <servlet>
+        <servlet-name>XmlaServlet</servlet-name>
+        <servlet-class>com.projecta.monsai.servlet.XmlaServlet</servlet-class>
+        <init-param>
+            <param-name>CharacterEncoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>XmlaServlet</servlet-name>
+        <url-pattern>/xmla</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>XmlaServlet</servlet-name>
+        <url-pattern>/excel/*</url-pattern>
+    </servlet-mapping>
+
+
+    <!-- The spring servlet -->
+    <servlet>
+        <servlet-name>spring</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:applicationContext.xml</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>spring</servlet-name>
+        <url-pattern>/flush-caches</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>spring</servlet-name>
+        <url-pattern>/stats</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>spring</servlet-name>
+        <url-pattern>/actions/*</url-pattern>
+    </servlet-mapping>
+
+    <!-- The jersey servlet, responsible for REST API calls -->
+    <servlet>
+        <servlet-name>jersey</servlet-name>
+        <servlet-class>com.projecta.monsai.util.LoggingEnunciateJerseyServletContainer</servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>org.saiku.web</param-value>
+        </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
+            <param-value>com.sun.jersey.api.container.filter.PostReplaceFilter</param-value>
+        </init-param>
+        <init-param>
+            <param-name>org.codehaus.enunciate.modules.jersey.config.ServletPath</param-name>
+            <param-value>/saiku/rest</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>jersey</servlet-name>
+        <url-pattern>/saiku/rest/*</url-pattern>
+    </servlet-mapping>
+
+</web-app>

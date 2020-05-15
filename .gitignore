@@ -1,0 +1,13 @@
+/bin/
+/build/
+/saiku/
+/saiku-query/
+/saiku-ui/
+/mondrian/
+/.gradle/
+/.settings/
+/.classpath
+/.project
+*.war
+.idea
+*.iml

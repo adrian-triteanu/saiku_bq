@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Merged bean definition  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:security="http://www.springframework.org/schema/security"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+               http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd
+               http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+               http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+               http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+               http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+    <context:component-scan base-package="com.projecta.monsai"/>
+    <security:global-method-security secured-annotations="enabled"/>
+
+    <!-- global handler mapping interceptors -->
+    <util:list id="enunciate-handler-interceptors"/>
+    <util:list id="service-bean-interceptors"/>
+
+    <!-- Import original saiku beans definition -->
+    <import resource="saiku-beans.xml"/>
+
+    <!-- Override several saiku beans with other versions -->
+    <bean id="sessionService" class="com.projecta.monsai.security.SaikuSessionService"/>
+
+    <bean id="connectionManager" class="com.projecta.monsai.connection.SaikuConnectionManager" init-method="init">
+        <property name="dataSourceManager" ref="cubesDsManager"/>
+        <property name="sessionService" ref="sessionService"/>
+    </bean>
+
+    <!-- Configure spring to return the content type text/plain when Strings are returned -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                    <property name="supportedMediaTypes" value="text/plain;charset=UTF-8" />
+                    <property name="writeAcceptCharset" value="false" />
+                </bean>
+                <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>
