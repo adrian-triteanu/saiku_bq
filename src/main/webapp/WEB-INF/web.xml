@@ -84,6 +84,10 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>spring</servlet-name>
+        <url-pattern>/versions</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>spring</servlet-name>
         <url-pattern>/actions/*</url-pattern>
     </servlet-mapping>
 

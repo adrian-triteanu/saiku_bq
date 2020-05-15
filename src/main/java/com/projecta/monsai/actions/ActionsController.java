@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.projecta.monsai.connection.MondrianServerProvider;
+import com.projecta.monsai.connection.SchemaVersioning;
 import com.projecta.monsai.query.StoredQueryValidationResult;
 import com.projecta.monsai.query.StoredQueryValidator;
 
@@ -26,6 +27,7 @@ public class ActionsController {
     @Autowired private MondrianServerProvider mondrianServerProvider;
     @Autowired private StoredQueryValidator   storedQueryValidator;
     @Autowired private StatisticsProvider     statisticsProvider;
+    @Autowired private SchemaVersioning       schemaVersioning;
 
     /**
      * Flushes the mondrian caches
@@ -57,6 +59,16 @@ public class ActionsController {
     @ResponseBody
     public String stats() throws Exception {
         return statisticsProvider.getStatistics();
+    }
+
+
+    /**
+     * Displays frontend schema versions
+     */
+    @RequestMapping( "/versions" )
+    @ResponseBody
+    public String versions() throws Exception {
+        return schemaVersioning.getSchemaVersionList();
     }
 
 }

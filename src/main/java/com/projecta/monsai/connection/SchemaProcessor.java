@@ -18,6 +18,10 @@ import org.w3c.dom.Document;
 import mondrian.olap.Util;
 import mondrian.spi.DynamicSchemaProcessor;
 
+import org.codehaus.jackson.map.ObjectMapper;
+import java.util.Map;
+import java.util.Map.Entry;
+
 /**
  * Schema processor that replaces different currencies in the mondrian schema,
  * depending on the configuration in the cubes.properties
@@ -30,6 +34,7 @@ public class SchemaProcessor implements DynamicSchemaProcessor {
     private static String schemaXML;
 
     @Autowired private Config config;
+    @Autowired private SchemaVersioning schemaVersioning;
 
     /**
      * (a) read schema, (b) replace currency placeholder with the on currency symbol
@@ -70,7 +75,22 @@ public class SchemaProcessor implements DynamicSchemaProcessor {
         if (currencyCode.length() > 1)
             currencyCode = " " + currencyCode;
 
-        schemaXML = schema.replace(currencyPlaceholder, currencyCode);
+        schema = schema.replace(currencyPlaceholder, currencyCode);
+
+        System.out.print("Schema versioning start");
+        String versionMap = schemaVersioning.getSchemaVersionList();
+
+        Map<Object, Object> mapping =
+                new ObjectMapper().readValue(versionMap, Map.class);
+
+        for (Entry<Object, Object> entry : mapping.entrySet()) {
+            /** temporarly **/
+            schema = schema.replace("schema=\"" + entry.getKey() + "\"", "schema=\"" + entry.getKey() + entry.getValue() + "\"");
+        }
+
+        System.out.print("Schema versioning end");
+
+        schemaXML = schema;
     }
 
 
