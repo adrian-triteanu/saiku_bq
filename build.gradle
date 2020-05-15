@@ -183,7 +183,7 @@ dependencies {
  * Manifest for the war file
  */
 war {
-    archiveName 'monsai.war'
+    archiveName 'cubes.war'
     destinationDir file('.')
 
     manifest {
