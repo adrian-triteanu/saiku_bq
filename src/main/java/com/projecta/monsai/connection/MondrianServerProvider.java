@@ -45,7 +45,7 @@ public class MondrianServerProvider {
     private static String              dataSourceName;
     private static String              catalogName;
 
-    private static final String JDBC_DRIVERS = "org.postgresql.Driver,nl.cwi.monetdb.jdbc.MonetDriver";
+    private static final String DEFAULT_JDBC_DRIVER = "org.postgresql.Driver";
 
     private static final Logger LOG = Logger.getLogger( MondrianServerProvider.class );
 
@@ -81,6 +81,8 @@ public class MondrianServerProvider {
 
         // read database connection parameters
         String databaseUrl      = config.getProperty( "databaseUrl" );
+        String databaseDriver   = config.getProperty("databaseDriver", DEFAULT_JDBC_DRIVER);
+
         String databaseUser     = config.getProperty( "databaseUser" );
         String databasePassword = config.getProperty( "databasePassword" );
         if ( StringUtils.isBlank( databaseUrl ) ) {
@@ -104,7 +106,7 @@ public class MondrianServerProvider {
                 "DynamicSchemaProcessor=com.projecta.monsai.connection.SchemaProcessor; " +
                 "UseContentChecksum=true; " +
                 "Jdbc=" + databaseUrl + "; " +
-                "JdbcDrivers=" + JDBC_DRIVERS + "; " +
+                "JdbcDrivers=" + databaseDriver + "; " +
                 "JdbcUser=" + StringUtils.defaultString( databaseUser ) + ";" +
                 "JdbcPassword=" + StringUtils.defaultString( databasePassword ) ) );
 
